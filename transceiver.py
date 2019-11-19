@@ -4,14 +4,10 @@ import serial
 from message import OP_TO_FMT_STR
 from message import Message
 
-
-# Current pinout on FTDI chip
-# CTS := AUX
-# RTS := M1
-# DTR := M0
+# from abc import ABC, abstractmethod
 
 
-class Transceiver:
+class Transceiver(object):
     AIR_DATA_RATES = {
         0: "0.3k",
         1: "1.2k",
@@ -23,38 +19,33 @@ class Transceiver:
         7: "19.2k"
     }
 
-    BASE_FREQUENCY = 868
+    MIN_FREQUENCY = 410
 
-    def __init__(self, ser=None, path='', m0=None, m1=None, aux=None):
+    def __init__(self, path):
         # Set serial object
-        if (ser is not None):
-            self._serial = ser
-        else:
-            self._serial = serial.Serial(path, 9600, timeout=None)
-            print('serial device created')
-
-        # Default starting mode is transmission mode
-        self.mode = "config"
-        self._set_transmission_mode()
+        self._serial = serial.Serial(path, 9600, timeout=None)
+        print('serial device created')
+        self._unique_initalization()
+        self._fininalize_initialization()
 
     #
     # Properties
     #
     @property
     def m1(self):
-        return self._serial.rts
+        pass
 
     @m1.setter
-    def m1(self, m1):
-        self._serial.rts = m1
+    def m1(self, value):
+        self._serial.rts = value
 
     @property
     def m0(self):
         return self._serial.dtr
 
     @m0.setter
-    def m0(self, m0):
-        self._serial.dtr = m0
+    def m0(self, value):
+        self._serial.dtr = value
 
     @property
     def aux(self):
@@ -110,7 +101,7 @@ class Transceiver:
 
         current_config['air_data_rate'] = self.AIR_DATA_RATES[adr_key]
         current_config['frequency'] = str(
-            self.BASE_FREQUENCY + resp[4]) + " Mhz"
+            self.MIN_FREQUENCY + resp[4]) + " Mhz"
 
         print('end config')
         return current_config
@@ -218,8 +209,8 @@ class Transceiver:
             time.sleep(0.02)
 
     def set_frequency(self, freq):
-        adj_freq = freq - self.BASE_FREQUENCY
-        if(adj_freq <= 0x17 and adj_freq >= 0x00):
+        adj_freq = freq - self.MIN_FREQUENCY
+        if(adj_freq <= 0x1F and adj_freq >= 0x00):
             last_config = self._last_config
             self._set_config_mode()
             req = bytearray(
@@ -256,3 +247,57 @@ class Transceiver:
         '''
         while(not self.is_available):
             continue
+
+    def _fininalize_initialization(self):
+        # Default starting mode is transmission mode
+        self.mode = "config"
+        self._set_transmission_mode()
+
+    def _unique_initalization(self):
+        pass
+
+
+# Current pinout on FTDI chip
+# CTS := AUX
+# RTS := M1
+# DTR := M0
+
+
+class GPIOTransceiver(Transceiver):
+    def __init__(self, path, gpio_pins):
+        self.gpio_pins = gpio_pins
+        super(GPIOTransceiver, self).__init__(path)
+
+    def _unique_initalization(self):
+        import RPi.GPIO as GPIO
+
+        GPIO.setmode(GPIO.BCM)
+
+        GPIO.setup(self.gpio_pins['m0'], GPIO.OUT)
+        GPIO.setup(self.gpio_pins['m1'], GPIO.OUT)
+        GPIO.setup(self.gpio_pins['aux'], GPIO.IN)
+
+        self.GPIO = GPIO
+
+    #
+    # Properties
+    #
+    @property
+    def m1(self):
+        return GPIO.input(self.gpio_pins['m1'])
+
+    @m1.setter
+    def m1(self, value):
+        self.GPIO.output(self.gpio_pins['m0'], value)
+
+    @property
+    def m0(self):
+        return GPIO.input(self.gpio_pins['m0'])
+
+    @m0.setter
+    def m0(self, value):
+        self.GPIO.output(self.gpio_pins['m0'], value)
+
+    @property
+    def aux(self):
+        return self.GPIO.output(self.gpio_pins['aux'])
