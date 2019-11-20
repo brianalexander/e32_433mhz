@@ -300,4 +300,4 @@ class GPIOTransceiver(Transceiver):
 
     @property
     def aux(self):
-        return self.GPIO.output(self.gpio_pins['aux'])
+        return self.GPIO.input(self.gpio_pins['aux'])
