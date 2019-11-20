@@ -1,5 +1,8 @@
-from ..message import Message
-from ..transceiver import Transceiver
+import sys
+sys.path.append("..")
+
+from message import Message
+from transceiver import Transceiver
 
 
 def gps(lat, lng):
@@ -15,7 +18,7 @@ def dispatch_to_rover(msg):
 
 
 if __name__ == "__main__":
-    transceiver = Transceiver(path='/dev/ttyUSB1')
+    transceiver = Transceiver(path='/dev/ttyUSB0')
 
     while(True):
         print('waiting for message...')

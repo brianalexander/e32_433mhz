@@ -6,5 +6,5 @@ from transceiver import Transceiver
 
 
 if __name__ == "__main__":
-    transceiver = Transceiver(path='/dev/ttyUSB0')
+    transceiver = Transceiver('/dev/ttyUSB0', 9600)
     print(transceiver.configuration)

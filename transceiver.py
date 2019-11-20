@@ -21,9 +21,9 @@ class Transceiver(object):
 
     MIN_FREQUENCY = 410
 
-    def __init__(self, path):
+    def __init__(self, path, baudrate):
         # Set serial object
-        self._serial = serial.Serial(path, 9600, timeout=None)
+        self._serial = serial.Serial(path, baudrate, timeout=None)
         print('serial device created')
         self._unique_initalization()
         self._fininalize_initialization()
@@ -284,7 +284,7 @@ class GPIOTransceiver(Transceiver):
     #
     @property
     def m1(self):
-        return GPIO.input(self.gpio_pins['m1'])
+        return self.GPIO.input(self.gpio_pins['m1'])
 
     @m1.setter
     def m1(self, value):
@@ -292,7 +292,7 @@ class GPIOTransceiver(Transceiver):
 
     @property
     def m0(self):
-        return GPIO.input(self.gpio_pins['m0'])
+        return self.GPIO.input(self.gpio_pins['m0'])
 
     @m0.setter
     def m0(self, value):
