@@ -43,14 +43,14 @@ class Message:
 
     @property
     def checksum(self):
-        return self._checksum
+        return self._checksum[0]
 
     @property
     def bytes(self):
-        message = self._byte_string + self.checksum
+        message = self._byte_string + self._checksum
         print(message)
         print(len(self._byte_string))
-        return self._byte_string + self.checksum
+        return self._byte_string + self._checksum
 
     def _get_checksum(self):
         length = len(self._byte_string)
@@ -59,7 +59,7 @@ class Message:
         for current_byte in individual_bytes[1:]:
             checksum = checksum ^ current_byte
 
-        return pack('B', checksum)[0]
+        return pack('B', checksum)
 
     def _build_byte_string(self):
         op_code = pack('B', self._op_code)
