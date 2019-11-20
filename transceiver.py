@@ -28,6 +28,9 @@ class Transceiver(object):
         self._unique_initalization()
         self._fininalize_initialization()
 
+    def __del__(self):
+        self.GPIO.cleanup()
+
     #
     # Properties
     #
