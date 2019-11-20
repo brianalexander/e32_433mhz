@@ -43,7 +43,9 @@ class Message:
 
     @property
     def checksum(self):
-        return self._checksum
+        if(isinstance(self._checksum[0], str)):
+            return ord(self._checksum[0])
+        return self._checksum[0]
 
     @property
     def bytes(self):

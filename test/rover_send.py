@@ -11,4 +11,5 @@ if __name__ == "__main__":
     transceiver = Transceiver(
         '/dev/ttyUSB0', 19200)
     message = Message(3, data=[11, 12])
+    print(message.checksum)
     transceiver.write(message)
