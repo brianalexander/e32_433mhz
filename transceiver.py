@@ -210,6 +210,8 @@ class Transceiver(object):
             self.mode = "transmission"
             self._wait_until_ready()
             time.sleep(0.02)
+            print('finished setting mode')
+
 
     def set_frequency(self, freq):
         adj_freq = freq - self.MIN_FREQUENCY
@@ -294,6 +296,7 @@ class GPIOTransceiver(Transceiver):
 
     @m1.setter
     def m1(self, value):
+        print(not value)
         self.GPIO.output(self.gpio_pins['m0'], not value)
 
     @property
@@ -302,6 +305,7 @@ class GPIOTransceiver(Transceiver):
 
     @m0.setter
     def m0(self, value):
+        print(not value)
         self.GPIO.output(self.gpio_pins['m0'], not value)
 
     @property
