@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 from message import Message
 from transceiver import Transceiver
 
@@ -16,7 +18,7 @@ def dispatch_to_base_station(msg):
 
 if __name__ == "__main__":
     print('in main')
-    transceiver = Transceiver(path='/dev/ttyUSB1')
+    transceiver = Transceiver('/dev/ttyUSB0', 9600)
 
     message = Message(3, data=[11, 12])
     transceiver.write(message)

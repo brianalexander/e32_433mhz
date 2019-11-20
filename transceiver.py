@@ -33,7 +33,7 @@ class Transceiver(object):
     #
     @property
     def m1(self):
-        return self._serial.dtr
+        return self._serial.rts
 
     @m1.setter
     def m1(self, value):
@@ -71,7 +71,9 @@ class Transceiver(object):
         self._set_config_mode()
         req = bytearray([0xC1, 0xC1, 0xC1])
         self._serial.write(req)
+        print('waiting for configuration')
         resp = self._serial.read(6)
+        print('got configuration')
         self._set_transmission_mode()
 
         # Save last received configuration
@@ -196,10 +198,11 @@ class Transceiver(object):
             self.mode = "config"
             self._wait_until_ready()
             time.sleep(0.02)
+            print('finished setting mode')
 
     def _set_transmission_mode(self):
         if(self.mode != "transmission"):
-            print('setting transmit mode')
+            print('setting transmit mode:')
             self._wait_until_ready()
             time.sleep(0.02)
             self.m0 = True
@@ -291,7 +294,7 @@ class GPIOTransceiver(Transceiver):
 
     @m1.setter
     def m1(self, value):
-        self.GPIO.output(self.gpio_pins['m0'], value)
+        self.GPIO.output(self.gpio_pins['m0'], not value)
 
     @property
     def m0(self):
@@ -299,7 +302,7 @@ class GPIOTransceiver(Transceiver):
 
     @m0.setter
     def m0(self, value):
-        self.GPIO.output(self.gpio_pins['m0'], value)
+        self.GPIO.output(self.gpio_pins['m0'], not value)
 
     @property
     def aux(self):
