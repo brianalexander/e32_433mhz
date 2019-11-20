@@ -179,7 +179,7 @@ class Transceiver(object):
         # Therefore, if the checksum from rebuilding the message
         # XOR'd with the checksum sent over the line is non-zero,
         # data was corrupted.
-        print('built_checksum' message.checksum)
+        print('built_checksum', message.checksum)
         if(message.checksum ^ checksum):
             # throw error
             # Set state to bad (2)
