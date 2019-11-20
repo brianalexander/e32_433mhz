@@ -264,9 +264,9 @@ class Transceiver(object):
 
 
 class GPIOTransceiver(Transceiver):
-    def __init__(self, path, gpio_pins):
+    def __init__(self, path, baudrate, gpio_pins):
         self.gpio_pins = gpio_pins
-        super(GPIOTransceiver, self).__init__(path)
+        super(GPIOTransceiver, self).__init__(path, baudrate)
 
     def _unique_initalization(self):
         import RPi.GPIO as GPIO
