@@ -47,6 +47,9 @@ class Message:
 
     @property
     def bytes(self):
+        message = self._byte_string + self._checksum
+        print(message)
+        print(len(self._byte_string))
         return self._byte_string + self._checksum
 
     def _get_checksum(self):

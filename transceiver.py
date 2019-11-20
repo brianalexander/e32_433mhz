@@ -165,9 +165,11 @@ class Transceiver(object):
 
         # get the data
         data = unpack(OP_TO_FMT_STR[op_code], self.read(length))
+        print("data", data)
 
         # get the checksum
         checksum = unpack('B', self.read(1))[0]
+        print("recv_checksum", checksum)
 
         # create a message object from given data
         message = Message(op_code=op_code, data=data)
@@ -177,6 +179,7 @@ class Transceiver(object):
         # Therefore, if the checksum from rebuilding the message
         # XOR'd with the checksum sent over the line is non-zero,
         # data was corrupted.
+        print('built_checksum' message.checksum)
         if(message.checksum ^ checksum):
             # throw error
             # Set state to bad (2)

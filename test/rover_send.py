@@ -1,8 +1,10 @@
+import sys
+sys.path.append("..")
+
 import serial
 from message import Message
 from transceiver import Transceiver
-import sys
-sys.path.append("..")
+
 
 if __name__ == "__main__":
     # 115200 or 9600
