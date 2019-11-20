@@ -43,7 +43,7 @@ class Message:
 
     @property
     def checksum(self):
-        return self._checksum[0]
+        return self._checksum
 
     @property
     def bytes(self):
