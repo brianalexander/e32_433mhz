@@ -28,15 +28,12 @@ class Transceiver(object):
         self._unique_initalization()
         self._fininalize_initialization()
 
-    def __del__(self):
-        self.GPIO.cleanup()
-
     #
     # Properties
     #
     @property
     def m1(self):
-        pass
+        return self._serial.dtr
 
     @m1.setter
     def m1(self, value):
@@ -270,6 +267,9 @@ class GPIOTransceiver(Transceiver):
     def __init__(self, path, baudrate, gpio_pins):
         self.gpio_pins = gpio_pins
         super(GPIOTransceiver, self).__init__(path, baudrate)
+
+    def __del__(self):
+        self.GPIO.cleanup()
 
     def _unique_initalization(self):
         import RPi.GPIO as GPIO
